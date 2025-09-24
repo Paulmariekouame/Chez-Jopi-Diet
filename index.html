@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JOPI DIET - Plats sains & Tisanes en abonnement</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <style>
+    /*
+      ** Changement : Rendu les cartes de la galerie uniformes et plus esthétiques.
+      ** J'ai supprimé la règle .section-decouvrez .card, qui n'était pas utilisée dans votre HTML,
+      ** et j'ai ajouté des règles pour dimensionner uniformément la zone média des cartes.
+    */
+    body {
+      background-color: #f9fbe7; /* jaune très clair */
+      color: #2e7d32; /* vert foncé */
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow-x: hidden; /* Empêcher le scroll horizontal */
+    }
+    .navbar {
+      background-color: #aed581; /* vert clair */
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      animation: slideInDown 0.5s ease-out;
+    }
+    @keyframes slideInDown {
+      from { transform: translateY(-100%); }
+      to { transform: translateY(0); }
+    }
+    .btn-whatsapp {
+      background-color: #25d366;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      transition: all 0.3s ease, transform 0.2s ease;
+    }
+    .btn-whatsapp:hover {
+      background-color: #1ebe57;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .logo-img {
+      max-height: 60px;
+      width: auto;
+      margin-right: 1rem;
+      transition: transform 0.3s ease;
+    }
+    .navbar-brand:hover .logo-img {
+      transform: scale(1.05);
+    }
+    .section-title {
+      border-bottom: 3px solid #2e7d32;
+      padding-bottom: 0.5rem;
+      margin-bottom: 2rem;
+      font-weight: 700;
+      color: #2e7d32;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s ease-out 0.2s forwards;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .form-control {
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .form-control:focus {
+      border-color: #2e7d32;
+      box-shadow: 0 0 5px rgba(46,125,50,0.25);
+      transform: scale(1.02);
+    }
+    .footer {
+      background-color: #2e7d32; /* vert foncé pour pro */
+      color: white;
+      padding: 2rem 0;
+      margin-top: 2rem;
+    }
+    .footer a {
+      color: #aed581;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .footer a:hover {
+      color: white;
+    }
+    /* Animations améliorées pour la galerie média */
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      justify-items: center;
+    }
+    .media-card {
+      border: 2px solid #2e7d32;
+      border-radius: 12px;
+      overflow: hidden;
+      background: white;
+      width: 100%;
+      max-width: 320px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+      animation: bounceIn 1s ease-out forwards;
+      animation-delay: var(--delay);
+      /* **Changement : La carte est maintenant un conteneur flex pour un alignement vertical parfait** */
+      display: flex;
+      flex-direction: column;
+    }
+    /* **Nouveau : Conteneur pour l'image et la vidéo qui garantit une hauteur uniforme** */
+    .media-card-media {
+      width: 100%;
+      height: 200px; /* **Hauteur fixe pour tous les médias** */
+      overflow: hidden;
+    }
+    .media-card-media img, .media-card-media video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* **Garde le ratio d'aspect sans déformation** */
+      display: block; /* **Supprime les espaces indésirables sous l'image** */
+    }
+    @keyframes bounceIn {
+      0% { opacity: 0; transform: translateY(30px) scale(0.95); }
+      50% { opacity: 0.8; transform: translateY(-5px) scale(1.01); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .media-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+    }
+    .media-card-body {
+      padding: 1rem;
+    }
+    .media-card-title {
+      font-weight: 600;
+      color: #2e7d32;
+      margin-bottom: 0.5rem;
+      transition: color 0.3s ease;
+    }
+    .media-card:hover .media-card-title {
+      color: #1b5e20;
+    }
+    .card {
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    }
+    .card img {
+      transition: transform 0.3s ease;
+    }
+    .card:hover img {
+      transform: scale(1.05);
+    }
+    /* Animations pour la section hero */
+    .hero-content {
+      animation: fadeInUpHero 1s ease-out;
+    }
+    @keyframes fadeInUpHero {
+      from { opacity: 0; transform: translateY(50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* Images avec effet de chargement */
+    .lazy-load {
+      background: linear-gradient(90deg, #f0f0f0 25%, transparent 37%, #f0f0f0 63%);
+      background-size: 400% 100%;
+      animation: loading 1.5s infinite;
+    }
+    @keyframes loading {
+      0% { background-position: 100% 50%; }
+      100% { background-position: -100% 50%; }
+    }
+    /* Effet parallax pour la hero */
+    .hero-bg {
+      background-attachment: fixed;
+      background-size: cover;
+      background-position: center;
+      min-height: 400px;
+      position: relative;
+    }
+    .hero-overlay {
+      background: rgba(46, 125, 50, 0.1);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    /* Animations déclenchées au scroll */
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .animate-on-scroll.animated {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* Responsive */
+    @media (max-width: 768px) {
+      .media-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      .media-card:hover {
+        transform: none; /* Désactiver le hover sur mobile */
+      }
+      .hero-bg {
+        background-attachment: scroll; /* Fix attachments on mobile */
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <img
+          src="logo JOPI.jpg"
+          alt="Logo JOPI DIET"
+          class="logo-img"
+        />
+        <span class="fs-4 fw-bold">JOPI DIET</span>
+      </a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#about">À propos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#media">Galerie</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#products">Produits</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#order-tisane">Tisanes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#order-food">Abonnement</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero-bg" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1350&q=80');">
+    <div class="hero-overlay"></div>
+    <div class="container py-5 text-center text-white position-relative hero-content">
+      <img src="logo JOPI.jpg" alt="Logo JOPI DIET Hero" class="hero-img mb-3 d-none d-md-block" style="max-height: 100px; filter: brightness(0) invert(1);" />
+      <h1 class="display-4 fw-bold mb-3">Bienvenue chez JOPI DIET</h1>
+      <p class="lead mb-4">
+        Plats sains & équilibrés en abonnement et tisanes à la commande, gérés via WhatsApp pour une expérience personnalisée.
+      </p>
+      <button
+        id="btnOrderHero"
+        class="btn btn-whatsapp btn-lg mt-3"
+        type="button"
+      >
+        Démarrer une commande
+      </button>
+    </div>
+  </header>
+
+  <section id="about" class="container my-5 animate-on-scroll">
+    <div class="row">
+      <div class="col-lg-8">
+        <h2 class="section-title">À propos de JOPI DIET</h2>
+        <p>
+          JOPI DIET est spécialisée dans la livraison de plats sains et équilibrés sous forme d'abonnement, ainsi que dans la vente de tisanes naturelles à la quantité désirée. 
+          Toutes nos interactions sont gérées via WhatsApp pour une communication directe, flexible et sécurisée. 
+          Choisissez votre abonnement ou vos tisanes, et nous nous occupons du reste !
+        </p>
+      </div>
+      <div class="col-lg-4 text-center">
+        <img src="https://images.unsplash.com/photo-1439130490301-25e322d88054?auto=format&fit=crop&w=634&q=80" alt="Équipe JOPI DIET" class="img-fluid rounded shadow lazy-load" style="height: 250px; object-fit: cover;" onload="this.classList.remove('lazy-load');" />
+      </div>
+    </div>
+  </section>
+
+  <section id="media" class="container my-5">
+    <h2 class="section-title text-center">Découvrez notre univers</h2>
+    <div class="media-grid">
+      <div class="media-card" style="--delay: 0.1s;">
+        <div class="media-card-media">
+          <img src="platcomplet.jpg" alt="Plat sain équilibré avec légumes frais et protéines" class="lazy-load" onload="this.classList.remove('lazy-load');" />
+        </div>
+        <div class="media-card-body">
+          <div class="media-card-title">Plat sain équilibré</div>
+          <p>Un repas nourrissant et savoureux, prêt à être dégusté.</p>
+        </div>
+      </div>
+      <div class="media-card" style="--delay: 0.3s;">
+        <div class="media-card-media">
+          <video controls preload="metadata" class="lazy-load" onload="this.classList.remove('lazy-load');">
+            <source src="annonce.mp4" type="video/mp4" />
+            Votre navigateur ne supporte pas la vidéo.
+          </video>
+        </div>
+        <div class="media-card-body">
+          <div class="media-card-title">Qu'attendez vous ?!</div>
+          <p>Découvrez Ce Que sa fait de manger sain.</p>
+        </div>
+      </div>
+      <div class="media-card" style="--delay: 0.5s;">
+        <div class="media-card-media">
+          <img src="thee1.jpg" alt="Tisane naturelle aux plantes relaxantes" class="lazy-load" onload="this.classList.remove('lazy-load');" />
+        </div>
+        <div class="media-card-body">
+          <div class="media-card-title">Tisane naturelle</div>
+          <p>Une infusion relaxante à base d'herbes sélectionnées.</p>
+        </div>
+      </div>
+      <div class="media-card" style="--delay: 0.7s;">
+        <div class="media-card-media">
+          <video controls preload="metadata" class="lazy-load" onload="this.classList.remove('lazy-load');">
+            <source src="annonce.mp4" type="video/mp4" />
+            Votre navigateur ne supporte pas la vidéo.
+          </video>
+        </div>
+        <div class="media-card-body">
+          <div class="media-card-title">Qu'attendez vous ?!</div>
+          <p>Nos clients partagent leur expérience avec JOPI DIET.</p>
+        </div>
+      </div>
+      <div class="media-card" style="--delay: 0.9s;">
+        <div class="media-card-media">
+          <img src="platoeuf.jpg" alt="Abonnement personnalisé aux plats sains" class="lazy-load" onload="this.classList.remove('lazy-load');" />
+        </div>
+        <div class="media-card-body">
+          <div class="media-card-title">Abonnement personnalisé</div>
+          <p>Choisissez votre formule d'abonnement via WhatsApp.</p>
+        </div>
+      </div>
+      <div class="media-card" style="--delay: 1.1s;">
+        <div class="media-card-media">
+          <video controls preload="metadata" class="lazy-load" onload="this.classList.remove('lazy-load');">
+            <source src="annonce.mp4" type="video/mp4" />
+            Votre navigateur ne supporte pas la vidéo.
+          </video>
+        </div>
+        <div class="media-card-body">
+          <div class="media-card-title">Qu'attendez vous ?!</div>
+          <p>Petits conseils pour une vie saine inspirés de nos experts.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="products" class="container my-5">
+    <h2 class="section-title text-center">Nos produits</h2>
+    <div class="row g-5 justify-content-center">
+      <div class="col-md-6">
+        <div class="card h-100 border-success animate-on-scroll">
+          <img src="platcomplet2.jpg" class="card-img-top lazy-load" alt="Plats sains et équilibrés préparés frais" onload="this.classList.remove('lazy-load');" />
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title text-success">Plats sains & équilibrés</h5>
+            <p class="card-text flex-grow-1">
+              Préparés avec des ingrédients frais et bio. Disponibles uniquement en abonnement pour une nutrition optimale.
+            </p>
+            <a href="#order-food" class="btn btn-whatsapp mt-auto">S'abonner via WhatsApp</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card h-100 border-success animate-on-scroll">
+          <img src="thee3.jpg" class="card-img-top lazy-load" alt="Tisanes naturelles aux plantes médicinales" onload="this.classList.remove('lazy-load');" />
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title text-success">Tisanes naturelles</h5>
+            <p class="card-text flex-grow-1">
+              Infusions aux plantes sélectionnées. Commandez à la quantité désirée et recevez-les rapidement.
+            </p>
+            <a href="#order-tisane" class="btn btn-whatsapp mt-auto">Commander maintenant</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="order-tisane" class="container my-5 animate-on-scroll">
+    <div class="row">
+      <div class="col-lg-8">
+        <h2 class="section-title">Commander des tisanes (à la quantité désirée)</h2>
+        <p>
+          Sélectionnez vos tisanes et contactez-nous via WhatsApp. Remplissez ce formulaire pour faciliter nos échanges.
+        </p>
+        <form id="orderTisaneForm" class="row g-3 needs-validation" novalidate>
+          <div class="col-md-6">
+            <label for="tisaneName" class="form-label">Nom complet *</label>
+            <input
+              type="text"
+              class="form-control"
+              id="tisaneName"
+              placeholder="Votre nom complet"
+              required
+            />
+            <div class="invalid-feedback">Veuillez entrer votre nom complet.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="tisanePhone" class="form-label">Numéro WhatsApp *</label>
+            <input
+              type="tel"
+              class="form-control"
+              id="tisanePhone"
+              placeholder="+225 0779241685"
+              pattern="^\+?\d{7,15}$"
+              required
+            />
+            <div class="invalid-feedback">
+              Veuillez entrer un numéro WhatsApp valide (ex: +22512345678).
+            </div>
+          </div>
+          <div class="col-12">
+            <label for="tisaneAddress" class="form-label">Adresse (optionnel)</label>
+            <input
+              type="text"
+              class="form-control"
+              id="tisaneAddress"
+              placeholder="Votre adresse de livraison"
+            />
+          </div>
+          <div class="col-12">
+            <label for="tisaneQuantity" class="form-label">Quantité *</label>
+            <input
+              type="number"
+              class="form-control"
+              id="tisaneQuantity"
+              min="1"
+              value="1"
+              required
+            />
+            <div class="invalid-feedback">Veuillez indiquer la quantité désirée.</div>
+          </div>
+          <div class="col-12">
+            <label for="tisaneMessage" class="form-label">Message supplémentaire (optionnel)</label>
+            <textarea
+              class="form-control"
+              id="tisaneMessage"
+              rows="3"
+              placeholder="Ex: Préférence de saveur, questions, etc."
+            ></textarea>
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-whatsapp">
+              Envoyer la commande via WhatsApp
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="col-lg-4 text-center d-none d-lg-block">
+        <img src="thee4.jpg" alt="Commander tisane" class="img-fluid rounded shadow lazy-load" style="height: 300px; object-fit: cover;" onload="this.classList.remove('lazy-load');" />
+      </div>
+    </div>
+  </section>
+
+  <section id="order-food" class="container my-5 animate-on-scroll">
+    <div class="row">
+      <div class="col-lg-8">
+        <h2 class="section-title">S'abonner aux plats sains & équilibrés</h2>
+        <p>
+          Nos abonnements sont entièrement gérés via WhatsApp pour une flexibilité totale. Remplissez ce formulaire pour exprimer votre intérêt ; nous vous contacterons pour personnaliser et gérer votre abonnement ainsi que les paiements.
+        </p>
+        <form id="orderFoodForm" class="row g-3 needs-validation" novalidate>
+          <div class="col-md-6">
+            <label for="foodName" class="form-label">Nom complet *</label>
+            <input
+              type="text"
+              class="form-control"
+              id="foodName"
+              placeholder="Votre nom complet"
+              required
+            />
+            <div class="invalid-feedback">Veuillez entrer votre nom complet.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="foodPhone" class="form-label">Numéro WhatsApp *</label>
+            <input
+              type="tel"
+              class="form-control"
+              id="foodPhone"
+              placeholder="+225 0779241685"
+              pattern="^\+?\d{7,15}$"
+              required
+            />
+            <div class="invalid-feedback">
+              Veuillez entrer un numéro WhatsApp valide (ex: +22912345678).
+            </div>
+          </div>
+          <div class="col-12">
+            <label for="foodAddress" class="form-label">Adresse de livraison *</label>
+            <input
+              type="text"
+              class="form-control"
+              id="foodAddress"
+              placeholder="Votre adresse complète"
+              required
+            />
+            <div class="invalid-feedback">Adresse de livraison requise pour l'abonnement.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="foodPreference" class="form-label">Préférences alimentaires</label>
+            <input
+              type="text"
+              class="form-control"
+              id="foodPreference"
+              placeholder="Ex: Végétarien, allergies, etc."
+            />
+          </div>
+          <div class="col-md-6">
+            <label for="foodFrequency" class="form-label">Fréquence souhaitée</label>
+            <select class="form-control" id="foodFrequency">
+              <option value="">Sélectionner</option>
+              <option value="Quotidienne">Quotidienne</option>
+              <option value="Hebdomadaire">Hebdomadaire</option>
+              <option value="Mensuelle">Mensuelle</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label for="foodMessage" class="form-label">Message ou demandes spéciales (optionnel)</label>
+            <textarea
+              class="form-control"
+              id="foodMessage"
+              rows="3"
+              placeholder="Ex: Portions, horaires de livraison, etc."
+            ></textarea>
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-whatsapp">
+              Lancer la discussion pour abonnement
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="col-lg-4 text-center d-none d-lg-block">
+        <img src="plat3.jpg" alt="Abonnement plats sains" class="img-fluid rounded shadow lazy-load" style="height: 300px; object-fit: cover;" onload="this.classList.remove('lazy-load');" />
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h5>JOPI DIET</h5>
+          <p>
+            Votre partenaire pour une alimentation saine et équilibrée. Contactez-nous pour toutes questions.
+          </p>
+          <p><strong>Horaires :</strong> Du lundi au Dimanche, 8h-18h</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <p>
+            <strong>Contact :</strong><br />
+            <a
+              href="https://wa.me/2250779241685"
+              target="_blank"
+              rel="noopener"
+              class="text-white text-decoration-underline"
+            >
+              WhatsApp : +2250779241685
+            </a>
+            <br />
+            | confidentialité | conditions générales
+          </p>
+          <p>&copy; 2025 JOPI DIET - Tous droits réservés.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Numéro WhatsApp de JOPI DIET (format international sans + ou espaces)
+    const whatsappNumber = "2250779241685";
+
+    // Fonction pour rediriger vers WhatsApp avec message personnalisé
+    function redirectWhatsApp(message) {
+      const encodedMessage = encodeURIComponent(message);
+      const url = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+      window.open(url, "_blank");
+    }
+
+    // Bouton "Passer une commande" dans le header
+    document.getElementById("btnOrderHero").addEventListener("click", () => {
+      redirectWhatsApp(
+        "Bonjour, je souhaite en savoir plus sur vos abonnements et tisanes chez JOPI DIET."
+      );
+    });
+
+    // Formulaire Tisane
+    document.getElementById("orderTisaneForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+      if (!this.checkValidity()) {
+        this.classList.add("was-validated");
+        return;
+      }
+      const name = document.getElementById("tisaneName").value.trim();
+      const phone = document.getElementById("tisanePhone").value.replace(/[\s\-()]/g, "");
+      const address = document.getElementById("tisaneAddress").value.trim();
+      const quantity = document.getElementById("tisaneQuantity").value;
+      const message = document.getElementById("tisaneMessage").value.trim();
+      let msg = `Bonjour, je commande ${quantity} tisane(s) chez JOPI DIET.%0A`;
+      msg += `Nom: ${name}%0A`;
+      msg += `Tél: +${phone}%0A`;
+      if (address) msg += `Adresse: ${address}%0A`;
+      if (message) msg += `Details: ${message}%0A`;
+      msg += "Pouvez-vous confirmer et m'aider pour le paiement ?";
+      redirectWhatsApp(msg);
+    });
+
+    // Formulaire Abonnement Plats
+    document.getElementById("orderFoodForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+      if (!this.checkValidity()) {
+        this.classList.add("was-validated");
+        return;
+      }
+      const name = document.getElementById("foodName").value.trim();
+      const phone = document.getElementById("foodPhone").value.replace(/[\s\-()]/g, "");
+      const address = document.getElementById("foodAddress").value.trim();
+      const pref = document.getElementById("foodPreference").value.trim();
+      const freq = document.getElementById("foodFrequency").value;
+      const message = document.getElementById("foodMessage").value.trim();
+      let msg = `Bonjour, je m'intéresse à un abonnement de plats sains chez JOPI DIET.%0A`;
+      msg += `Nom: ${name}%0A`;
+      msg += `Tél: +${phone}%0A`;
+      msg += `Adresse: ${address}%0A`;
+      if (pref) msg += `Préférences: ${pref}%0A`;
+      if (freq) msg += `Fréquence: ${freq}%0A`;
+      if (message) msg += `Details: ${message}%0A`;
+      msg += "Pouvez-vous m'aider à choisir et gérer l'abonnement ?";
+      redirectWhatsApp(msg);
+    });
+
+    // Intersection Observer for scroll animations
+    const observerOptions = { threshold: 0.1 };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animated');
+        }
+      });
+    }, observerOptions);
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+    // Smooth scroll for navbar links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
+</html>
+
+
